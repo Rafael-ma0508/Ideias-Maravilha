@@ -1,0 +1,75 @@
+/* Réinitialisation des styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('img/otros3.jpg'); /* Utilisation de ton image d'origine */
+    background-size: cover; /* S'adapte à l'écran */
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+}
+
+/* Conteneur central */
+.container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent pour meilleure lisibilité */
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 90%; /* Pour s’adapter aux petits écrans */
+    max-width: 400px; /* Évite que ce soit trop large */
+}
+
+/* Texte de la question */
+h1 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+/* Boutons */
+.choices {
+    display: flex;
+    flex-direction: column; /* Les boutons sont empilés */
+    gap: 10px;
+    align-items: center;
+}
+
+.choice {
+    text-decoration: none;
+    background: #FF9900;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    width: 100%; /* Les boutons prennent la largeur du conteneur */
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.choice:hover {
+    background: #cc7a00;
+}
+
+/* Responsive */
+@media (min-width: 600px) {
+    .container {
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .choice {
+        font-size: 1.2rem;
+        padding: 12px 25px;
+    }
+}
