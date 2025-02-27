@@ -10,13 +10,14 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('img/otros3.jpg'); /* Utilisation de ton image d'origine */
-    background-size: cover; /* S'adapte à l'écran */
+    background-image: url('img/logo.jpg'); /* Assure-toi que l'image est bien placée */
+    background-size: contain; /* L'image sera toujours visible en entier */
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed; /* L'image reste fixe même au scroll */
     font-family: Arial, sans-serif;
+    background-color: white; /* Fond blanc si l'image ne couvre pas tout */
 }
-
 /* Conteneur central */
 .container {
     text-align: center;
