@@ -11,7 +11,7 @@ body {
     align-items: center;
     height: 100vh;
     width: 100vw;
-    background-image: url('img/otros3.jpg'); /* Utilisation de ton image */
+    background-image: url('img/logo.jpg'); /* Utilisation de ton image */
     background-size: contain; /* L'image s'affiche entièrement sans être coupée */
     background-position: center;
     background-repeat: no-repeat;
