@@ -10,11 +10,15 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('img/otros3.jpg'); /* Utilisation de ton image d'origine */
-    background-size: cover; /* S'adapte à l'écran */
+    width: 100vw;
+    background-image: url('img/otros3.jpg'); /* Utilisation de ton image */
+    background-size: contain; /* L'image s'affiche entièrement sans être coupée */
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed; /* L'image reste fixe même au scroll */
     font-family: Arial, sans-serif;
+    background-color: white; /* Fond blanc si l'image ne couvre pas tout */
+    overflow: hidden; /* Empêche le scroll si l’image ne prend pas tout */
 }
 
 /* Conteneur central */
@@ -23,7 +27,7 @@ body {
     background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent pour meilleure lisibilité */
     padding: 1.5rem;
     border-radius: 8px;
-    width: 90%; /* Pour s’adapter aux petits écrans */
+    width: 90%; /* S’adapte aux petits écrans */
     max-width: 400px; /* Évite que ce soit trop large */
 }
 
