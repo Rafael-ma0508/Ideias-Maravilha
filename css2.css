@@ -1,0 +1,317 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
+    scroll-behavior: smooth;
+}
+
+/* Uniformisation des tailles pour balises h1, h2, p, etc. */
+h1, h2, h3, p {
+    margin: 0 0 1rem;
+    line-height: 1.6;
+    color: inherit;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p {
+    font-size: 1.2rem;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 0.8rem 1.5rem;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-right: auto;
+}
+
+.navbar .logo img {
+    height: 80px;
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    left: -40px;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #DEB887;
+}
+
+/* Dropdown styles */
+.nav-links .dropdown {
+    position: relative;
+}
+
+.nav-links .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -75px;
+    background-color: #fff;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.nav-links .dropdown-menu li {
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-links .dropdown-menu li:last-child {
+    border-bottom: none;
+}
+
+.nav-links .dropdown-menu a {
+    padding: 10px 20px;
+    display: block;
+    color: #333;
+    background-color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.nav-links .dropdown-menu a:hover {
+    background-color: #f1f1f1;
+    color: #DEB887;
+}
+
+.nav-links .dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    text-align: center;
+    color: #333;
+    padding: 6rem 2rem;
+    margin-top: 60px;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('img/fond.jpg');
+    background-size: 120%;
+    background-position: center;
+    filter: blur(5px);
+    z-index: -1;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+    color: #000000;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #000000;
+}
+
+.btn {
+    background-color: #DEB887;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #ffffff;
+}
+
+/* Designs Section */
+.designs {
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: #f8f8f8;
+}
+
+.design-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.design-item {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.design-item:hover {
+    transform: scale(1.05);
+}
+
+/* About Section - Images */
+.about {
+    padding: 3rem 2rem;
+    background-color: #fff;
+    text-align: center;
+}
+
+.about h2 {
+    font-size: 2rem;
+    color: #DEB887;
+}
+
+.about p {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.about-images {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.about-images img {
+    width: 60%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.about-images img:hover {
+    transform: scale(1.05);
+}
+
+
+@media (max-width: 600px) {
+    /* Réduction de la taille du texte de la barre de navigation */
+    .nav-links a {
+        font-size: 0.9rem;
+    }
+
+    .navbar .logo img {
+        height: 70px;
+    }
+
+    /* Réduction des images dans "Nossos Produtos" */
+    .design-gallery {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+    }
+
+    .design-item {
+        width: 100%;
+        height: 150px;
+    }
+
+    /* Réduction des images dans "Sobre Nós" */
+    .about-images img {
+        width: 70%;
+        max-width: 220px;
+    }
+}
+
+/* Contact Section */
+.contact {
+    padding: 3rem 2rem;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 2rem;
+    color: #DEB887;
+}
+
+.contact ul {
+    list-style: none;
+    padding: 0;
+}
+
+.contact ul li {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+}
+
+.contact ul li a {
+    color: #DEB887;
+    text-decoration: none;
+}
+
+.contact ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+/* Scroll Smooth */
+html {
+    scroll-behavior: smooth;
+}
