@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ideias-maravilha-madeira-e-epoxi.netlify.app/sitemap.xml
