@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ideias Maravilha – Madeira & Epóxi</title>
+  <link rel="icon" href="img/logo.jpg" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; }
+    img { display: block; max-width: 100%; }
+    a { transition: color .2s; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #1A0E07; }
+    ::-webkit-scrollbar-thumb { background: #6B3D2E; border-radius: 4px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    @keyframes epoxiFlow {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    @keyframes pulseRing {
+      0%,100% { box-shadow: 0 0 0 0 rgba(212,168,85,.4); }
+      50%      { box-shadow: 0 0 0 14px rgba(212,168,85,0); }
+    }
+
+    .fade-up { animation: fadeUp .55s ease both; }
+    .nav-btn {
+      border: none; cursor: pointer; border-radius: 20px;
+      font-family: 'Nunito', sans-serif; font-weight: 700;
+      font-size: 13px; letter-spacing: .03em; padding: 8px 16px;
+      transition: transform .15s, opacity .15s;
+    }
+    .nav-btn:hover { transform: translateY(-1px); opacity: .88; }
+
+    .choice-card {
+      transition: transform .4s ease, box-shadow .4s ease;
+      cursor: pointer;
+    }
+    .choice-card:hover { transform: translateY(-10px) scale(1.02); }
+
+    .cat-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+      cursor: pointer;
+    }
+    .cat-card:hover { transform: translateY(-6px); }
+
+    .gallery-img {
+      transition: transform .25s ease, box-shadow .25s ease;
+      cursor: zoom-in;
+    }
+    .gallery-img:hover { transform: scale(1.04); }
+
+    .lnk-item {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; font-size: 15px;
+      padding: 11px 0; transition: color .2s;
+    }
+
+    /* Lightbox */
+    #lightbox {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,.95);
+      align-items: center; justify-content: center;
+    }
+    #lightbox.active { display: flex; }
+    #lb-img {
+      max-width: 90vw; max-height: 90vh;
+      object-fit: contain; border-radius: 10px;
+      box-shadow: 0 0 80px rgba(0,0,0,.9);
+    }
+    .lb-btn {
+      position: absolute; background: rgba(255,255,255,.12);
+      border: none; color: #fff; border-radius: 50%;
+      cursor: pointer; font-size: 36px; line-height: 1;
+      backdrop-filter: blur(6px); padding: 10px 18px;
+      transition: background .2s;
+    }
+    .lb-btn:hover { background: rgba(255,255,255,.22); }
+    #lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+    #lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
+    #lb-close { top: 16px; right: 16px; font-size: 22px; padding: 8px 14px; }
+    #lb-counter { position: absolute; bottom: 16px; color: rgba(255,255,255,.4); font-size: 13px; }
+
+    /* Stars */
+    .star { font-size: 28px; color: #444; cursor: pointer; transition: color .15s; }
+    .star.on { color: #FFD700; }
+    .star.readonly { font-size: 18px; cursor: default; }
+
+    /* Responsive nav */
+    @media (max-width: 600px) {
+      .nav-links { gap: 5px !important; }
+      .nav-btn { font-size: 10px !important; padding: 5px 8px !important; }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      .gallery-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 6px !important; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; padding: 24px 14px !important; }
+      .cat-card-img { height: 130px !important; }
+      .hero-section { min-height: 100svh !important; padding: 40px 16px 32px !important; }
+      .hero-logo { width: 85px !important; height: 85px !important; margin-bottom: 18px !important; }
+      .hero-sub { font-size: 11px !important; letter-spacing: .12em !important; margin-bottom: 40px !important; }
+      .choice-cards-wrap { gap: 16px !important; }
+      .choice-card { width: min(92vw, 380px) !important; }
+      .choice-card-img { height: 170px !important; }
+      .choice-card-body { padding: 18px 20px 22px !important; }
+      .choice-card-title { font-size: 38px !important; }
+      .section-pad { padding: 48px 16px !important; }
+      .about-row { flex-direction: column !important; gap: 24px !important; }
+      .about-imgs { height: 200px !important; }
+      .section-header { padding: 36px 16px !important; }
+      .reviews-pad { padding: 48px 16px !important; }
+      .reviews-form { padding: 22px 16px !important; }
+      .contact-pad { padding: 48px 16px !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Lightbox (vanilla JS for perf) -->
+<div id="lightbox">
+  <button class="lb-btn" id="lb-prev">&#8249;</button>
+  <img id="lb-img" src="" alt="" />
+  <button class="lb-btn" id="lb-next">&#8250;</button>
+  <button class="lb-btn" id="lb-close">&#10005;</button>
+  <div id="lb-counter"></div>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+/* ─── DATA ─────────────────────────────────────────────────────────────────── */
+const LOGO = "img/logo.jpg";
+
+const MADEIRA_CATS = [
+  { id:"natal",      label:"Natal",                           folder:"img_Page2",  prefix:"natal",      count:43, icon:"🎄" },
+  { id:"retratos",   label:"Porta Retratos",                  folder:"img_Page3",  prefix:"retratos",   count:13, icon:"🖼️" },
+  { id:"luminoso",   label:"Letreiros Luminosos",             folder:"img_Page4",  prefix:"Letreiros",  count:7,  icon:"💡" },
+  { id:"casamentos", label:"Casamento / Batizado / Comunhões",folder:"img_Page5",  prefix:"casamento",  count:50, icon:"💍" },
+  { id:"chaves",     label:"Porta Chaves",                    folder:"img_Page9",  prefix:"chaves",     count:27, icon:"🔑" },
+  { id:"trofeus",    label:"Troféus e Medalhas",              folder:"img_Page10", prefix:"Trofeus",    count:28, icon:"🏆" },
+  { id:"candeeiros", label:"Candeeiros",                      folder:"img_Page11", prefix:"Candeeiros", count:22, icon:"🕯️" },
+  { id:"pascoa",     label:"Páscoa e Padrinhos",              folder:"Page_12",    prefix:"pascoa",     count:24, icon:"🐣" },
+  { id:"animais",    label:"Animais",                         folder:"Page_13",    prefix:"animais",    count:30, icon:"🐾" },
+  { id:"pais",       label:"Dia do Pai",                      folder:"Page_14",    prefix:"pais",       count:27, icon:"👨‍👧" },
+  { id:"namorados",  label:"Dia dos Namorados",               folder:"Page_15",    prefix:"namorados",  count:17, icon:"❤️" },
+  { id:"escola",     label:"Escola / Finalistas",             folder:"Page_16",    prefix:"escola",     count:26, icon:"🎓" },
+];
+
+const EPOXI_CATS = [
+  { id:"cabelo",      label:"Cabelo, Dentinho, Gravidez…",    folder:"Page_17", prefix:"cabelo",    count:13, icon:"✨" },
+  { id:"pascoa2",     label:"Páscoa",                          folder:"Page_18", prefix:"pascoa",    count:11, icon:"🐣" },
+  { id:"joias",       label:"Jóias",                           folder:"Page_19", prefix:"joias",     count:28, icon:"💎" },
+  { id:"chaves2",     label:"Porta Chaves",                    folder:"Page_23", prefix:"porte",     count:9,  icon:"🔑" },
+  { id:"presente",    label:"Presentes Personalizados",         folder:"Page_20", prefix:"presente",  count:61, icon:"🎁" },
+  { id:"pecas",       label:"Peças Únicas",                    folder:"Page_21", prefix:"pecas",     count:15, icon:"🔮" },
+  { id:"casamentos2", label:"Casamento / Batizado / Comunhões",folder:"Page_22", prefix:"casamento", count:9,  icon:"💍" },
+];
+
+const HOME_SAMPLES = [
+  "img/natal1.jpg","img/natal2.jpg","img/natal3.jpg",
+  "img/pascoa1.jpg","img/pascoa2.jpg","img/pascoa3.jpg",
+  "img/anos1.jpg","img/anos2.jpg","img/anos3.jpg",
+  "img/otros.jpg","img/otros2.jpg","img/otros3.jpg",
+];
+
+function catImages(cat) {
+  return Array.from({ length: cat.count }, (_, i) => `${cat.folder}/${cat.prefix}${i + 1}.jpg`);
+}
+
+/* ─── LIGHTBOX (vanilla) ────────────────────────────────────────────────────── */
+let _lbImages = [];
+let _lbIndex  = 0;
+
+function lbShow(images, index) {
+  _lbImages = images;
+  _lbIndex  = index;
+  lbRender();
+  document.getElementById("lightbox").classList.add("active");
+}
+
+function lbRender() {
+  document.getElementById("lb-img").src     = _lbImages[_lbIndex];
+  document.getElementById("lb-counter").textContent = `${_lbIndex + 1} / ${_lbImages.length}`;
+}
+
+document.getElementById("lb-close").onclick = () =>
+  document.getElementById("lightbox").classList.remove("active");
+
+document.getElementById("lightbox").onclick = e => {
+  if (e.target === document.getElementById("lightbox"))
+    document.getElementById("lightbox").classList.remove("active");
+};
+
+document.getElementById("lb-prev").onclick = e => {
+  e.stopPropagation();
+  _lbIndex = (_lbIndex - 1 + _lbImages.length) % _lbImages.length;
+  lbRender();
+};
+
+document.getElementById("lb-next").onclick = e => {
+  e.stopPropagation();
+  _lbIndex = (_lbIndex + 1) % _lbImages.length;
+  lbRender();
+};
+
+document.addEventListener("keydown", e => {
+  const lb = document.getElementById("lightbox");
+  if (!lb.classList.contains("active")) return;
+  if (e.key === "Escape")     lb.classList.remove("active");
+  if (e.key === "ArrowLeft")  { _lbIndex = (_lbIndex - 1 + _lbImages.length) % _lbImages.length; lbRender(); }
+  if (e.key === "ArrowRight") { _lbIndex = (_lbIndex + 1) % _lbImages.length; lbRender(); }
+});
+
+/* ─── STARS ─────────────────────────────────────────────────────────────────── */
+function Stars({ value, onChange, readOnly = false }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div style={{ display:"flex", gap:3 }}>
+      {[1,2,3,4,5].map(s => (
+        <span
+          key={s}
+          className={`star${readOnly ? " readonly" : ""}${s <= (hover || value) ? " on" : ""}`}
+          onMouseEnter={() => !readOnly && setHover(s)}
+          onMouseLeave={() => !readOnly && setHover(0)}
+          onClick={() => !readOnly && onChange && onChange(s)}
+        >★</span>
+      ))}
+    </div>
+  );
+}
+
+/* ─── NAVBAR ────────────────────────────────────────────────────────────────── */
+function Navbar({ theme, navigate }) {
+  const isE = theme === "epoxi";
+  const isMad = theme === "madeira";
+  const bg = isE ? "#040D1A" : isMad ? "rgba(44,24,16,.97)" : "rgba(26,14,7,.92)";
+  const accent = isE ? "#9EEAF9" : "#D4A855";
+  return (
+    <nav style={{
+      position:"sticky", top:0, zIndex:200,
+      background:bg, backdropFilter:"blur(14px)",
+      borderBottom:`1px solid ${isE ? "rgba(0,184,255,.2)" : "rgba(212,168,85,.2)"}`,
+      padding:"12px 24px", display:"flex", alignItems:"center",
+      justifyContent:"space-between", flexWrap:"wrap", gap:8,
+    }}>
+      <div onClick={() => navigate("home")} style={{
+        cursor:"pointer", display:"flex", alignItems:"center", gap:12,
+        fontFamily:"'Cormorant Garamond',serif", fontSize:22, fontWeight:600,
+        color:accent, letterSpacing:".05em",
+      }}>
+        <img src={LOGO} alt="logo" style={{
+          width:40, height:40, borderRadius:"50%", objectFit:"cover",
+          border:`2px solid ${accent}44`,
+        }} />
+        Ideias Maravilha
+      </div>
+      <div className="nav-links" style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+        <button className="nav-btn" onClick={() => navigate("madeira")}
+          style={{ background:"rgba(212,168,85,.12)", color:"#D4A855", border:"1px solid rgba(212,168,85,.35)" }}>
+          🪵 Madeira
+        </button>
+        <button className="nav-btn" onClick={() => navigate("epoxi")}
+          style={{ background:"rgba(0,184,255,.1)", color:"#9EEAF9", border:"1px solid rgba(0,184,255,.3)" }}>
+          💎 Epóxi
+        </button>
+        <button className="nav-btn" onClick={() => navigate("reviews")}
+          style={{ background:"rgba(255,215,0,.1)", color:"#FFD700", border:"1px solid rgba(255,215,0,.25)" }}>
+          ⭐ Avaliações
+        </button>
+        <button className="nav-btn" onClick={() => navigate("contact")}
+          style={{ background:"rgba(255,255,255,.06)", color:"rgba(245,232,215,.8)", border:"1px solid rgba(255,255,255,.12)" }}>
+          📞 Contacto
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+/* ─── DIVIDER ────────────────────────────────────────────────────────────────── */
+function Divider({ color = "#D4A855" }) {
+  return <div style={{ width:60, height:2, background:color, margin:"0 auto 48px", opacity:.55 }} />;
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────────────────────────── */
+function Footer({ theme }) {
+  const isE = theme === "epoxi";
+  const isMad = theme === "madeira";
+  return (
+    <footer style={{
+      textAlign:"center", padding:"22px 24px",
+      borderTop:`1px solid ${isE ? "rgba(0,184,255,.1)" : isMad ? "rgba(100,60,20,.18)" : "rgba(212,168,85,.1)"}`,
+      color: isMad ? "rgba(44,24,16,.4)" : "rgba(245,232,215,.3)",
+      fontSize:13,
+    }}>
+      © Ideias Maravilha · Desenvolvido por Rafael Maia (+33 6 51 61 65 36)
+    </footer>
+  );
+}
+
+/* ─── CONTACT SECTION ────────────────────────────────────────────────────────── */
+function ContactSection({ theme }) {
+  const isE   = theme === "epoxi";
+  const isMad = theme === "madeira";
+
+  const borderColor = isE ? "rgba(0,184,255,.15)" : isMad ? "rgba(100,60,20,.22)" : "rgba(212,168,85,.2)";
+  const cardBg      = isE ? "rgba(255,255,255,.04)" : isMad ? "rgba(100,60,20,.07)" : "rgba(255,255,255,.04)";
+  const textColor   = isMad ? "#1A0A04" : "rgba(245,232,215,.78)";
+  const hoverMad    = "#6B3D2E";
+  const titleColor  = isE ? "#9EEAF9" : isMad ? "#3D1505" : "#D4A855";
+
+  const sectionStyle = {
+    padding:"80px 24px",
+    borderTop:`1px solid ${borderColor}`,
+    background: isE ? "rgba(4,13,26,.6)" : isMad ? "rgba(100,60,20,.04)" : "rgba(0,0,0,.05)",
+  };
+
+  const cardStyle = (extraBorder) => ({
+    flex:"1 1 280px", background:cardBg,
+    border:`1px solid ${extraBorder}`,
+    borderRadius:16, padding:28,
+  });
+
+  const links_mad = [
+    { href:"https://www.facebook.com/IdeiasMaravilha",                                              icon:"📘", text:"Facebook — Ideias Maravilha" },
+    { href:"https://instagram.com/marcomaravilh?igsh=NWUza.J2NHF0ando",                            icon:"📸", text:"Instagram — @marcomaravilh" },
+    { href:"tel:+351916943697",                                                                      icon:"📞", text:"+351 91 69 43 697", last:true },
+  ];
+  const links_epo = [
+    { href:"https://www.facebook.com/share/1ABJTywnqe/",                                            icon:"📘", text:"Facebook — Epoxi_by_Gi" },
+    { href:"https://www.instagram.com/epoxiebarbantebygi?igsh=MTdpdjh6anRvcngxbg==",                icon:"📸", text:"Instagram — @epoxiebarbantebygi" },
+    { href:"tel:+351916943697",                                                                      icon:"📞", text:"+351 91 69 43 697", last:true },
+  ];
+
+  const renderLinks = (list, hoverColor) => list.map(({ href, icon, text, last }) => (
+    <a
+      key={href} href={href}
+      target={href.startsWith("tel") ? undefined : "_blank"} rel="noopener"
+      className="lnk-item"
+      style={{
+        color: textColor,
+        borderBottom: last ? "none" : `1px solid ${borderColor}`,
+      }}
+      onMouseEnter={e => e.currentTarget.style.color = hoverColor}
+      onMouseLeave={e => e.currentTarget.style.color = textColor}
+    >
+      <span style={{ fontSize:20 }}>{icon}</span>{text}
+    </a>
+  ));
+
+  return (
+    <div id="contact" className="contact-pad" style={sectionStyle}>
+      <div style={{ maxWidth:900, margin:"0 auto" }}>
+        <h2 style={{
+          fontFamily:"'Cormorant Garamond',serif", fontSize:44, fontWeight:400,
+          textAlign:"center", marginBottom:16, color:titleColor,
+        }}>Contacto</h2>
+        <Divider color={isE ? "#9EEAF9" : isMad ? "#8B5E3C" : "#D4A855"} />
+
+        <div style={{ display:"flex", gap:24, flexWrap:"wrap" }}>
+          {/* Madeira card */}
+          <div style={cardStyle(isMad ? "rgba(100,60,20,.25)" : "rgba(212,168,85,.25)")}>
+            <h3 style={{
+              fontFamily:"'Cormorant Garamond',serif", fontSize:24,
+              color: isMad ? "#3D1505" : "#D4A855", marginBottom:20,
+            }}>🪵 Madeira</h3>
+            {renderLinks(links_mad, isMad ? hoverMad : "#D4A855")}
+          </div>
+
+          {/* Epóxi card */}
+          <div style={cardStyle(isE ? "rgba(0,184,255,.2)" : isMad ? "rgba(100,60,20,.25)" : "rgba(0,184,255,.2)")}>
+            <h3 style={{
+              fontFamily:"'Cormorant Garamond',serif", fontSize:24,
+              ...(isE
+                ? { background:"linear-gradient(135deg,#9EEAF9,#7B2FBE)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }
+                : { color: isMad ? "#3D1505" : "#D4A855" }
+              ),
+              marginBottom:20,
+            }}>💎 Epóxi</h3>
+            {renderLinks(links_epo, isE ? "#9EEAF9" : isMad ? hoverMad : "#9EEAF9")}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── REVIEWS SECTION ────────────────────────────────────────────────────────── */
+function ReviewsSection({ theme, reviews, onSubmit }) {
+  const [form, setForm] = useState({ name:"", comment:"", rating:0 });
+  const [ok, setOk] = useState(false);
+
+  const isE   = theme === "epoxi";
+  const isMad = theme === "madeira";
+  const accent = isE ? "#9EEAF9" : isMad ? "#5A2E10" : "#D4A855";
+  const border = isE ? "rgba(0,184,255,.15)" : isMad ? "rgba(100,60,20,.2)" : "rgba(212,168,85,.2)";
+  const cardBg = isE ? "rgba(255,255,255,.04)" : isMad ? "rgba(100,60,20,.06)" : "rgba(255,255,255,.04)";
+  const textColor   = isMad ? "#2C1810" : "rgba(245,232,215,.88)";
+  const inputColor  = isMad ? "#1A0A04" : "#F5E8D7";
+  const inputBg     = isMad ? "rgba(100,60,20,.08)" : "rgba(255,255,255,.06)";
+  const labelColor  = isMad ? "rgba(44,24,16,.55)" : "rgba(245,232,215,.5)";
+
+  const inputStyle = {
+    width:"100%", padding:"12px 16px", borderRadius:8,
+    background:inputBg, border:`1px solid ${border}`,
+    color:inputColor, fontSize:15, outline:"none",
+    fontFamily:"'Nunito',sans-serif",
+  };
+
+  const doSubmit = () => {
+    if (!form.name.trim() || !form.comment.trim() || !form.rating) return;
+    onSubmit({ ...form, date: new Date().toLocaleDateString("pt-PT"), id: Date.now() });
+    setForm({ name:"", comment:"", rating:0 });
+    setOk(true);
+    setTimeout(() => setOk(false), 3500);
+  };
+
+  return (
+    <div id="reviews" className="reviews-pad" style={{ padding:"80px 24px", borderTop:`1px solid ${border}` }}>
+      <div style={{ maxWidth:900, margin:"0 auto" }}>
+        <h2 style={{
+          fontFamily:"'Cormorant Garamond',serif", fontSize:44, fontWeight:400,
+          textAlign:"center", marginBottom:16, color:accent,
+        }}>Avaliações</h2>
+        <Divider color={isE ? "#9EEAF9" : isMad ? "#8B5E3C" : "#D4A855"} />
+
+        {/* Form */}
+        <div className="reviews-form" style={{ background:cardBg, border:`1px solid ${border}`, borderRadius:16, padding:32, marginBottom:40 }}>
+          <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:26, color:accent, marginBottom:24 }}>
+            Deixe a sua avaliação
+          </h3>
+
+          <div style={{ marginBottom:16 }}>
+            <label style={{ display:"block", fontSize:12, color:labelColor, marginBottom:8, fontWeight:700, letterSpacing:".08em", textTransform:"uppercase" }}>
+              Nome e Apelido
+            </label>
+            <input
+              value={form.name}
+              onChange={e => setForm(f => ({ ...f, name:e.target.value }))}
+              placeholder="O seu nome…"
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom:16 }}>
+            <label style={{ display:"block", fontSize:12, color:labelColor, marginBottom:8, fontWeight:700, letterSpacing:".08em", textTransform:"uppercase" }}>
+              Nota
+            </label>
+            <Stars value={form.rating} onChange={v => setForm(f => ({ ...f, rating:v }))} />
+          </div>
+
+          <div style={{ marginBottom:24 }}>
+            <label style={{ display:"block", fontSize:12, color:labelColor, marginBottom:8, fontWeight:700, letterSpacing:".08em", textTransform:"uppercase" }}>
+              Comentário
+            </label>
+            <textarea
+              value={form.comment}
+              onChange={e => setForm(f => ({ ...f, comment:e.target.value }))}
+              placeholder="Partilhe a sua experiência…"
+              rows={4}
+              style={{ ...inputStyle, resize:"vertical" }}
+            />
+          </div>
+
+          <button
+            onClick={doSubmit}
+            style={{
+              background: isE
+                ? "linear-gradient(135deg,#0055BB,#7B2FBE)"
+                : isMad
+                  ? "linear-gradient(135deg,#4A2510,#8B5E3C)"
+                  : "linear-gradient(135deg,#7B4A2D,#D4A855)",
+              color:"#fff", border:"none", padding:"13px 32px",
+              borderRadius:30, fontSize:15, fontWeight:700, cursor:"pointer",
+              fontFamily:"'Nunito',sans-serif", letterSpacing:".04em",
+            }}
+          >
+            ✓ Publicar Avaliação
+          </button>
+          {ok && <p style={{ color:"#4CAF50", marginTop:12, fontSize:15 }}>✓ Avaliação publicada!</p>}
+        </div>
+
+        {/* List */}
+        {reviews.length === 0
+          ? <p style={{ textAlign:"center", color: isMad ? "rgba(44,24,16,.4)" : "rgba(245,232,215,.35)", fontSize:16 }}>
+              Ainda não há avaliações. Seja o primeiro!
+            </p>
+          : <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+              {reviews.map(r => (
+                <div key={r.id} style={{ background:cardBg, border:`1px solid ${border}`, borderRadius:12, padding:"18px 24px" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:6, marginBottom:8 }}>
+                    <div>
+                      <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:600, color:accent, marginBottom:4 }}>
+                        {r.name}
+                      </div>
+                      <Stars value={r.rating} readOnly />
+                    </div>
+                    <span style={{ color: isMad ? "rgba(44,24,16,.4)" : "rgba(245,232,215,.35)", fontSize:13 }}>{r.date}</span>
+                  </div>
+                  <p style={{ color:textColor, fontSize:15, lineHeight:1.75 }}>{r.comment}</p>
+                </div>
+              ))}
+            </div>
+        }
+      </div>
+    </div>
+  );
+}
+
+/* ─── SECTION HEADER ─────────────────────────────────────────────────────────── */
+function SectionHeader({ isEpoxi, title, subtitle, backLabel, onBack }) {
+  return (
+    <div className="section-header" style={{
+      padding:"52px 24px", textAlign:"center",
+      background: isEpoxi
+        ? "linear-gradient(135deg,#040D1A,#0A1535,#040D1A)"
+        : "linear-gradient(135deg,#2C1810,#4A2510,#3D1F0A)",
+      position:"relative", overflow:"hidden",
+    }}>
+      {isEpoxi
+        ? <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,rgba(123,47,190,.22),rgba(0,100,200,.2),rgba(0,184,255,.15),rgba(123,47,190,.22))", backgroundSize:"400% 400%", animation:"epoxiFlow 8s ease infinite" }} />
+        : <div style={{ position:"absolute", inset:0, opacity:.07, backgroundImage:"repeating-linear-gradient(93deg,transparent 0,transparent 2px,rgba(212,168,85,1) 2px,rgba(212,168,85,1) 3px)" }} />
+      }
+      <div style={{ position:"relative", zIndex:1 }}>
+        <button
+          onClick={onBack}
+          style={{
+            background:"transparent",
+            border:`1px solid ${isEpoxi ? "rgba(0,184,255,.35)" : "rgba(212,168,85,.45)"}`,
+            color: isEpoxi ? "#9EEAF9" : "#D4A855",
+            padding:"8px 18px", borderRadius:20, cursor:"pointer",
+            marginBottom:24, fontSize:14, fontFamily:"'Nunito',sans-serif",
+          }}
+        >← {backLabel}</button>
+        <h1 style={{
+          fontFamily:"'Cormorant Garamond',serif",
+          fontSize:"clamp(38px,6vw,70px)",
+          fontWeight:400, letterSpacing:".05em", marginBottom:10,
+          ...(isEpoxi
+            ? { background:"linear-gradient(135deg,#9EEAF9,#7B2FBE,#00B8CC)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }
+            : { color:"#F5E8D7" }
+          ),
+        }}>{title}</h1>
+        {subtitle && <p style={{ fontSize:16, color: isEpoxi ? "rgba(158,234,249,.6)" : "rgba(245,232,215,.6)" }}>{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
+
+/* ─── CATEGORY CARD ──────────────────────────────────────────────────────────── */
+function CatCard({ cat, navigate, isEpoxi, index }) {
+  const cover = `${cat.folder}/${cat.prefix}1.jpg`;
+  return (
+    <div
+      className="cat-card"
+      onClick={() => navigate(cat.id)}
+      style={{
+        borderRadius:16, overflow:"hidden",
+        background: isEpoxi ? "rgba(255,255,255,.04)" : "#fff",
+        border: isEpoxi ? "1px solid rgba(0,184,255,.15)" : "1px solid rgba(139,90,43,.18)",
+        boxShadow: isEpoxi ? "0 4px 22px rgba(0,0,0,.5)" : "0 4px 22px rgba(100,60,20,.12)",
+        animation:`fadeUp .45s ease ${Math.min(index*.06,.5)}s both`,
+      }}
+    >
+      <div className="cat-card-img" style={{ height:200, overflow:"hidden", position:"relative" }}>
+        <img src={cover} alt={cat.label} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform .4s ease", opacity: isEpoxi ? .82 : 1 }} />
+        <div style={{ position:"absolute", inset:0, background:`linear-gradient(to bottom,transparent 40%,${isEpoxi ? "rgba(4,13,26,.85)" : "rgba(44,24,16,.55)"})` }} />
+        {isEpoxi && <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,rgba(123,47,190,.18),rgba(0,184,255,.12),transparent)", backgroundSize:"400% 400%", animation:"epoxiFlow 6s ease infinite" }} />}
+        <div style={{ position:"absolute", bottom:12, left:14, fontSize:28 }}>{cat.icon}</div>
+      </div>
+      <div style={{ padding:"16px 20px 22px" }}>
+        <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontWeight:600, color: isEpoxi ? "#E0F0FF" : "#2C1810", marginBottom:6 }}>
+          {cat.label}
+        </h3>
+        <p style={{ fontSize:13, color: isEpoxi ? "rgba(158,234,249,.5)" : "#8B6040", marginBottom:12 }}>
+          {cat.count} criações
+        </p>
+        <span style={{
+          display:"inline-block",
+          background: isEpoxi ? "rgba(0,184,255,.1)" : "#F5E8D7",
+          color: isEpoxi ? "#9EEAF9" : "#6B3D2E",
+          border: isEpoxi ? "1px solid rgba(0,184,255,.3)" : "1px solid rgba(139,90,43,.3)",
+          padding:"6px 14px", borderRadius:20, fontSize:13, fontWeight:700,
+        }}>Ver galeria →</span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── GALLERY IMAGE ──────────────────────────────────────────────────────────── */
+function GalleryImg({ src, alt, onClick, isEpoxi, delay = 0 }) {
+  return (
+    <img
+      src={src} alt={alt}
+      className="gallery-img"
+      onClick={onClick}
+      style={{
+        width:"100%", aspectRatio:"1", objectFit:"cover",
+        borderRadius:10,
+        border: isEpoxi ? "1px solid rgba(0,184,255,.1)" : "1px solid rgba(139,90,43,.12)",
+        boxShadow: isEpoxi ? "0 4px 16px rgba(0,0,0,.5)" : "0 4px 16px rgba(100,60,20,.12)",
+        animation:`fadeUp .35s ease ${delay}s both`,
+      }}
+    />
+  );
+}
+
+/* ─── CHOICE CARD (landing) ───────────────────────────────────────────────────── */
+function ChoiceCard({ isEpoxi, title, icon, coverSrc, desc, onClick }) {
+  return (
+    <div
+      className="choice-card"
+      onClick={onClick}
+      style={{
+        width:"min(370px,90vw)", borderRadius:22, overflow:"hidden",
+        background: isEpoxi
+          ? "linear-gradient(160deg,#040D1A,#0A1535,#0E2355,#040D1A)"
+          : "linear-gradient(160deg,#3D1F0A,#6B3D2E,#7B4A2D,#4A2510)",
+        border: isEpoxi ? "1px solid rgba(0,184,255,.22)" : "1px solid rgba(212,168,85,.32)",
+        boxShadow: isEpoxi ? "0 18px 60px rgba(0,0,0,.65)" : "0 18px 60px rgba(0,0,0,.65)",
+        position:"relative",
+      }}
+    >
+      {isEpoxi && <div style={{ position:"absolute", inset:0, background:"linear-gradient(135deg,rgba(123,47,190,.18),rgba(0,100,200,.18),rgba(0,184,255,.12),rgba(123,47,190,.18))", backgroundSize:"400% 400%", animation:"epoxiFlow 6s ease infinite", zIndex:0 }} />}
+      <div className="choice-card-img" style={{ height:230, overflow:"hidden", position:"relative", zIndex:1 }}>
+        <img src={coverSrc} alt={title} style={{ width:"100%", height:"100%", objectFit:"cover", opacity: isEpoxi ? .65 : .75 }} />
+        <div style={{ position:"absolute", inset:0, background:`linear-gradient(to bottom,transparent 35%,${isEpoxi ? "#040D1A" : "#3D1F0A"})` }} />
+      </div>
+      <div className="choice-card-body" style={{ padding:"24px 28px 30px", textAlign:"center", position:"relative", zIndex:1 }}>
+        <div style={{ fontSize:46, marginBottom:10 }}>{icon}</div>
+        <h2 className="choice-card-title" style={{
+          fontFamily:"'Cormorant Garamond',serif", fontSize:50, fontWeight:500,
+          letterSpacing:".04em", marginBottom:10,
+          ...(isEpoxi
+            ? { background:"linear-gradient(135deg,#9EEAF9,#7B2FBE,#00B8CC)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }
+            : { color:"#F5E8D7" }
+          ),
+        }}>{title}</h2>
+        <p style={{ color: isEpoxi ? "rgba(158,234,249,.7)" : "rgba(245,232,215,.7)", fontSize:15, lineHeight:1.65, marginBottom:22 }}>
+          {desc}
+        </p>
+        <span style={{
+          display:"inline-block",
+          background: isEpoxi ? "rgba(0,184,255,.12)" : "rgba(212,168,85,.18)",
+          color: isEpoxi ? "#9EEAF9" : "#D4A855",
+          border: isEpoxi ? "1px solid rgba(0,184,255,.45)" : "1px solid rgba(212,168,85,.5)",
+          padding:"10px 26px", borderRadius:30, fontSize:14,
+          fontWeight:700, letterSpacing:".08em", textTransform:"uppercase",
+        }}>Ver Criações →</span>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MAIN APP
+═══════════════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════════
+   ⚙️  CONFIGURAÇÃO AVALIAÇÕES — preencher uma única vez
+   1. Ir a https://jsonbin.io → criar conta gratuita
+   2. Criar novo bin com conteúdo: []  → copiar o ID do bin
+   3. Account → Master Key → copiar a chave
+   4. Colar abaixo:
+═══════════════════════════════════════════════════════════════════════ */
+const JBIN_ID  = "JSONBIN_ID_AQUI";   // ex: 664f1a2e...
+const JBIN_KEY = "JSONBIN_KEY_AQUI";  // ex: $2a$10$...
+
+async function fetchReviews() {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JBIN_ID}/latest`, {
+      headers: { "X-Master-Key": JBIN_KEY }
+    });
+    const d = await res.json();
+    return Array.isArray(d.record) ? d.record : [];
+  } catch { return []; }
+}
+
+async function saveReviews(list) {
+  try {
+    await fetch(`https://api.jsonbin.io/v3/b/${JBIN_ID}`, {
+      method: "PUT",
+      headers: { "Content-Type":"application/json", "X-Master-Key": JBIN_KEY },
+      body: JSON.stringify(list),
+    });
+  } catch(e) { console.error("Erro ao guardar avaliação", e); }
+}
+
+function App() {
+  const [page, setPage]         = useState("home");
+  const [reviews, setReviews]   = useState([]);
+  const [loadingRev, setLoadRev] = useState(true);
+
+  useEffect(() => {
+    fetchReviews().then(r => { setReviews(r); setLoadRev(false); });
+  }, []);
+
+  const navigate = p => { setPage(p); window.scrollTo({ top:0, behavior:"smooth" }); };
+
+  const addReview = async r => {
+    const next = [r, ...reviews];
+    setReviews(next);
+    await saveReviews(next);
+  };
+
+  const allCats = [...MADEIRA_CATS, ...EPOXI_CATS];
+  const currentCat = allCats.find(c => c.id === page);
+  const isEpoxiCat = !!EPOXI_CATS.find(c => c.id === page);
+
+  /* ── HOME ─────────────────────────────────────────────────────────────────── */
+  if (page === "home") return (
+    <div style={{ background:"#1A0E07", color:"#F5E8D7", minHeight:"100vh" }}>
+      <Navbar theme="home" navigate={navigate} />
+
+      {/* HERO */}
+      <div className="hero-section" style={{
+        minHeight:"100vh", display:"flex", flexDirection:"column",
+        alignItems:"center", justifyContent:"center", padding:"60px 24px",
+        background:"radial-gradient(ellipse at 30% 60%,rgba(100,60,20,.45),transparent 60%),radial-gradient(ellipse at 70% 40%,rgba(50,10,100,.22),transparent 55%),#1A0E07",
+        position:"relative", overflow:"hidden",
+      }}>
+        <div style={{ position:"absolute", inset:0, opacity:.06, backgroundImage:"repeating-linear-gradient(94deg,transparent 0,transparent 2px,rgba(212,168,85,1) 2px,rgba(212,168,85,1) 3px),repeating-linear-gradient(180deg,transparent 0,transparent 22px,rgba(212,168,85,.5) 22px,rgba(212,168,85,.5) 23px)" }} />
+
+        <div className="fade-up" style={{ textAlign:"center", position:"relative", zIndex:1 }}>
+          <img src={LOGO} alt="Ideias Maravilha" className="hero-logo" style={{
+            width:130, height:130, borderRadius:"50%", objectFit:"cover",
+            marginBottom:28, border:"3px solid rgba(212,168,85,.45)",
+            boxShadow:"0 0 50px rgba(212,168,85,.4),0 8px 40px rgba(0,0,0,.6)",
+            animation:"pulseRing 3s ease infinite",
+          }} />
+          <h1 style={{
+            fontFamily:"'Cormorant Garamond',serif",
+            fontSize:"clamp(50px,9vw,100px)", fontWeight:300,
+            letterSpacing:".08em", lineHeight:1.05, marginBottom:10,
+            background:"linear-gradient(135deg,#A0752A,#F5E8D7,#D4A855,#8B5A14)",
+            backgroundSize:"200% auto",
+            WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
+            animation:"shimmer 4s linear infinite",
+          }}>Ideias Maravilha</h1>
+          <p className="hero-sub" style={{ color:"rgba(245,232,215,.5)", fontSize:17, letterSpacing:".2em", textTransform:"uppercase", fontWeight:300, marginBottom:64 }}>
+            Artesanato em Madeira &amp; Resina de Epóxi
+          </p>
+        </div>
+
+        {/* Choice cards */}
+        <div className="choice-cards-wrap" style={{ display:"flex", gap:28, flexWrap:"wrap", justifyContent:"center", zIndex:1, animation:"fadeUp .9s ease .3s both" }}>
+          <ChoiceCard
+            isEpoxi={false} title="Madeira" icon="🪵"
+            coverSrc="img/maquina1.jpg"
+            desc="Peças únicas esculpidas à mão com a beleza natural da madeira"
+            onClick={() => navigate("madeira")}
+          />
+          <ChoiceCard
+            isEpoxi={true} title="Epóxi" icon="💎"
+            coverSrc="Page_19/joias1.jpg"
+            desc="Jóias e peças deslumbrantes em resina translúcida de epóxi"
+            onClick={() => navigate("epoxi")}
+          />
+        </div>
+      </div>
+
+      {/* SOBRE NÓS */}
+      <div className="section-pad" style={{ padding:"80px 24px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:46, fontWeight:400, textAlign:"center", marginBottom:16, color:"#D4A855" }}>Sobre Nós</h2>
+          <Divider />
+          <div className="about-row" style={{ display:"flex", gap:48, flexWrap:"wrap", alignItems:"center" }}>
+            <div style={{ flex:"1 1 300px" }}>
+              <p style={{ color:"rgba(245,232,215,.85)", fontSize:17, lineHeight:1.9, marginBottom:20 }}>
+                A <strong style={{ color:"#D4A855" }}>Ideias Maravilha</strong> é uma empresa artesanal criada com paixão e dedicação ao detalhe. Especializados na criação de peças únicas em <strong style={{ color:"#C4905A" }}>madeira</strong> e <strong style={{ color:"#9EEAF9" }}>resina de epóxi</strong>, cada criação é um reflexo do talento e do amor pelo artesanato.
+              </p>
+              <p style={{ color:"rgba(245,232,215,.7)", fontSize:16, lineHeight:1.9, marginBottom:20 }}>
+                Com anos de experiência, transformamos ideias em objetos que ficam para sempre — presentes personalizados, recordações de momentos especiais, decoração única para a sua casa ou escritório.
+              </p>
+              <p style={{ color:"rgba(245,232,215,.7)", fontSize:16, lineHeight:1.9 }}>
+                A nossa missão é simples: unir criatividade, sustentabilidade e o verdadeiro espírito do artesanato em cada peça, com atenção e cuidado em cada pormenor.
+              </p>
+            </div>
+            <div className="about-imgs" style={{ flex:"1 1 300px", display:"flex", gap:14 }}>
+              {["img/maquina1.jpg","img/maquina2.jpg"].map((src,i) => (
+                <img key={i} src={src} alt="Ateliê" style={{ flex:1, borderRadius:14, objectFit:"cover", height:290, boxShadow:"0 8px 40px rgba(0,0,0,.6)", border:"1px solid rgba(212,168,85,.15)" }} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SAMPLE GALLERY */}
+      <div style={{ padding:"40px 24px 80px", borderTop:"1px solid rgba(212,168,85,.1)", background:"rgba(255,255,255,.015)" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:42, fontWeight:400, textAlign:"center", marginBottom:16, color:"#D4A855" }}>Algumas Criações</h2>
+          <Divider />
+          <div className="gallery-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))", gap:12 }}>
+            {HOME_SAMPLES.map((src,i) => (
+              <GalleryImg key={i} src={src} alt={`Criação ${i+1}`}
+                onClick={() => lbShow(HOME_SAMPLES, i)}
+                isEpoxi={false} delay={i*.04}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <ReviewsSection theme="home" reviews={reviews} onSubmit={addReview} />
+      <ContactSection theme="home" />
+      <Footer theme="home" />
+    </div>
+  );
+
+  /* ── REVIEWS PAGE ────────────────────────────────────────────────────────── */
+  if (page === "reviews") return (
+    <div style={{ background:"#1A0E07", color:"#F5E8D7", minHeight:"100vh" }}>
+      <Navbar theme="home" navigate={navigate} />
+      <ReviewsSection theme="home" reviews={reviews} onSubmit={addReview} />
+      <Footer theme="home" />
+    </div>
+  );
+
+  /* ── CONTACT PAGE ────────────────────────────────────────────────────────── */
+  if (page === "contact") return (
+    <div style={{ background:"#1A0E07", color:"#F5E8D7", minHeight:"100vh" }}>
+      <Navbar theme="home" navigate={navigate} />
+      <ContactSection theme="home" />
+      <Footer theme="home" />
+    </div>
+  );
+
+  /* ── MADEIRA HUB ─────────────────────────────────────────────────────────── */
+  if (page === "madeira") return (
+    <div style={{
+      background:"#F5E8D7", color:"#2C1810", minHeight:"100vh",
+      backgroundImage:"repeating-linear-gradient(93deg,transparent 0,transparent 3px,rgba(139,90,43,.025) 3px,rgba(139,90,43,.025) 4px)",
+    }}>
+      <Navbar theme="madeira" navigate={navigate} />
+      <SectionHeader
+        isEpoxi={false} title="🪵 Madeira"
+        subtitle="Descubra as nossas criações artesanais em madeira"
+        backLabel="Início" onBack={() => navigate("home")}
+      />
+      <div style={{ maxWidth:1200, margin:"0 auto", padding:"48px 24px" }}>
+        <div className="cat-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(255px,1fr))", gap:24 }}>
+          {MADEIRA_CATS.map((cat,i) => <CatCard key={cat.id} cat={cat} navigate={navigate} isEpoxi={false} index={i} />)}
+        </div>
+      </div>
+      <ContactSection theme="madeira" />
+      <Footer theme="madeira" />
+    </div>
+  );
+
+  /* ── EPÓXI HUB ───────────────────────────────────────────────────────────── */
+  if (page === "epoxi") return (
+    <div style={{ background:"#040D1A", color:"#E0F0FF", minHeight:"100vh" }}>
+      <Navbar theme="epoxi" navigate={navigate} />
+      <SectionHeader
+        isEpoxi={true} title="💎 Epóxi"
+        subtitle="Criações deslumbrantes em resina translúcida de epóxi"
+        backLabel="Início" onBack={() => navigate("home")}
+      />
+      <div style={{ maxWidth:1200, margin:"0 auto", padding:"48px 24px" }}>
+        <div className="cat-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(255px,1fr))", gap:24 }}>
+          {EPOXI_CATS.map((cat,i) => <CatCard key={cat.id} cat={cat} navigate={navigate} isEpoxi={true} index={i} />)}
+        </div>
+      </div>
+      <ContactSection theme="epoxi" />
+      <Footer theme="epoxi" />
+    </div>
+  );
+
+  /* ── CATEGORY PAGE ───────────────────────────────────────────────────────── */
+  if (currentCat) {
+    const imgs = catImages(currentCat);
+    const isE  = isEpoxiCat;
+    const bg   = isE ? "#040D1A" : "#F5E8D7";
+    const col  = isE ? "#E0F0FF" : "#2C1810";
+
+    return (
+      <div style={{
+        background:bg, color:col, minHeight:"100vh",
+        ...(!isE ? { backgroundImage:"repeating-linear-gradient(93deg,transparent 0,transparent 3px,rgba(139,90,43,.025) 3px,rgba(139,90,43,.025) 4px)" } : {}),
+      }}>
+        <Navbar theme={isE ? "epoxi" : "madeira"} navigate={navigate} />
+        <SectionHeader
+          isEpoxi={isE}
+          title={`${currentCat.icon} ${currentCat.label}`}
+          subtitle={`${imgs.length} criações · Clique numa imagem para ver em tamanho grande`}
+          backLabel={isE ? "Epóxi" : "Madeira"}
+          onBack={() => navigate(isE ? "epoxi" : "madeira")}
+        />
+        <div style={{ maxWidth:1400, margin:"0 auto", padding:"40px 24px" }}>
+          <div className="gallery-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:12 }}>
+            {imgs.map((src,i) => (
+              <GalleryImg
+                key={i} src={src} alt={`${currentCat.label} ${i+1}`}
+                onClick={() => lbShow(imgs, i)}
+                isEpoxi={isE} delay={Math.min(i*.015,.35)}
+              />
+            ))}
+          </div>
+        </div>
+        <ContactSection theme={isE ? "epoxi" : "madeira"} />
+        <Footer theme={isE ? "epoxi" : "madeira"} />
+      </div>
+    );
+  }
+
+  return null;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
